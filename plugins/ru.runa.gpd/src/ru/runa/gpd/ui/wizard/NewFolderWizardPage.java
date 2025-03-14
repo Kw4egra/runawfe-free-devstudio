@@ -98,6 +98,9 @@ public class NewFolderWizardPage extends WizardPage {
         } else if (getFolder().exists()) {
             setErrorMessage(Localization.getString("error.folder_already_exists"));
             setPageComplete(false);
+        } else if (folderText.getText().length() > 0 && folderText.getText().startsWith(".")) {
+        	setErrorMessage(Localization.getString("error.folder_name_begins_with_dot"));
+        	setPageComplete(false);
         } else {
             setErrorMessage(null);
             setPageComplete(true);
