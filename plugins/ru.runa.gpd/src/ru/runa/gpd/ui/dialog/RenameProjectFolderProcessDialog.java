@@ -101,7 +101,9 @@ public class RenameProjectFolderProcessDialog extends Dialog {
                 allowCreation = false;
             }
         } else if (folder != null) {
-            if (folder.getFullPath().lastSegment().startsWith(".")) {
+        	if (name.startsWith(".")) {
+        		allowCreation = false;
+        	} else if (folder.getFullPath().lastSegment().startsWith(".")) {
                 allowCreation &= !IOUtils.isChildFolderExists(folder.getParent(), "." + name);
             } else {
                 allowCreation &= !IOUtils.isChildFolderExists(folder.getParent(), name);
