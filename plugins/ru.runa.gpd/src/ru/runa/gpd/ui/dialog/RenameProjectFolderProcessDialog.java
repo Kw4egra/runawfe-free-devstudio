@@ -111,8 +111,9 @@ public class RenameProjectFolderProcessDialog extends Dialog {
         } else if (definition != null) {
             allowCreation &= definition.getEmbeddedSubprocessByName(name) == null;
             allowCreation &= !definition.getName().equals(name);
-            folder = (IFolder) definition.getFile().getParent();
-            if (folder.getFullPath().lastSegment().startsWith(".")) {
+            folder = (IFolder) definition.getFile().getParent();if (name.startsWith(".")) {
+        		allowCreation = false;
+        	} else if (folder.getFullPath().lastSegment().startsWith(".")) {
                 allowCreation &= !IOUtils.isChildFolderExists(folder.getParent(), "." + name);
             } else {
                 allowCreation &= !IOUtils.isChildFolderExists(folder.getParent(), name);
