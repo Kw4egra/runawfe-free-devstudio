@@ -100,7 +100,7 @@ public class RenameProjectFolderProcessDialog extends Dialog {
         	if (name.startsWith(".")) {
         		Shell Askshell = getShell();
         		boolean result = MessageDialog.openQuestion(Askshell, "Предупреждение", 
-        				"Это действие превратит процесс в глобальный раздел, вы уверены?\nЭто необратимо.");
+        				"Точка в начале названия процесса изменит его тип, он станет глобальным разделом.\nЭто необратимо.");
         		if (result) {
         			super.okPressed();
         		}
