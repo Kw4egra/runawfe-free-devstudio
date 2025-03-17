@@ -1,5 +1,7 @@
 package ru.runa.gpd.ui.dialog;
 
+import java.io.Console;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -8,6 +10,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -82,7 +85,6 @@ public class RenameProjectFolderProcessDialog extends Dialog {
                 updateButtons();
             }
         });
-
         return area;
     }
 
@@ -90,6 +92,26 @@ public class RenameProjectFolderProcessDialog extends Dialog {
     protected void createButtonsForButtonBar(Composite parent) {
         super.createButtonsForButtonBar(parent);
         getButton(IDialogConstants.OK_ID).setEnabled(false);
+    }
+    
+    @Override
+    protected void okPressed() {
+    	if (definition != null) {
+        	if (name.startsWith(".")) {
+        		Shell Askshell = getShell();
+        		boolean result = MessageDialog.openQuestion(Askshell, "Предупреждение", 
+        				"Это действие превратит процесс в глобальный раздел, вы уверены?\nЭто необратимо.");
+        		if (result) {
+        			super.okPressed();
+        		}
+        		else {
+        			super.cancelPressed();
+        		}
+        	}
+        }
+    	else {
+    		super.okPressed();
+    	}
     }
 
     private void updateButtons() {
@@ -103,17 +125,14 @@ public class RenameProjectFolderProcessDialog extends Dialog {
         } else if (folder != null) {
         	if (name.startsWith(".")) {
         		allowCreation = false;
-        	} else if (folder.getFullPath().lastSegment().startsWith(".")) {
-                allowCreation &= !IOUtils.isChildFolderExists(folder.getParent(), "." + name);
-            } else {
+        	} else {
                 allowCreation &= !IOUtils.isChildFolderExists(folder.getParent(), name);
             }
         } else if (definition != null) {
             allowCreation &= definition.getEmbeddedSubprocessByName(name) == null;
             allowCreation &= !definition.getName().equals(name);
-            folder = (IFolder) definition.getFile().getParent();if (name.startsWith(".")) {
-        		allowCreation = false;
-        	} else if (folder.getFullPath().lastSegment().startsWith(".")) {
+            folder = (IFolder) definition.getFile().getParent();
+            if (folder.getFullPath().lastSegment().startsWith(".")) {
                 allowCreation &= !IOUtils.isChildFolderExists(folder.getParent(), "." + name);
             } else {
                 allowCreation &= !IOUtils.isChildFolderExists(folder.getParent(), name);
